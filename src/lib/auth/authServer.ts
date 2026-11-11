@@ -1,0 +1,32 @@
+import {
+	ORIGIN,
+	GOOGLE_CLIENT_ID,
+	GOOGLE_CLIENT_SECRET
+} from '$app/env/private';
+
+import { betterAuth } from 'better-auth/minimal';
+import {admin, organization, lastLoginMethod} from 'better-auth/plugins'
+import { drizzleAdapter } from 'better-auth/adapters/drizzle';
+import { sveltekitCookies } from 'better-auth/svelte-kit';
+import { getRequestEvent } from '$app/server';
+import { db } from '#lib/server/db/index.ts';
+
+export const auth = betterAuth({
+	baseURL: ORIGIN,
+	database: drizzleAdapter(db, { provider: 'sqlite' }),
+	socialProviders: {
+		google: {
+			clientId: GOOGLE_CLIENT_ID,
+			clientSecret: GOOGLE_CLIENT_SECRET
+		}
+	},
+	plugins: [
+		admin({
+			defaultRole: 'user',
+			adminUserIds:['wxJz9rRb7ZZFFJsLfmDyvMPWaM3E6RRU']
+		}),
+		organization({allowUserToCreateOrganization:true}),
+		lastLoginMethod(),
+		sveltekitCookies(getRequestEvent) // make sure this is the last plugin in the array
+	]
+});
