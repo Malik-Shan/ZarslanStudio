@@ -10,6 +10,8 @@
     import { slugify } from "#lib";
     import { toast } from "svelte-sonner";
     import Spinner from "#lib/components/ui/spinner/spinner.svelte";
+    import { goto } from "$app/navigation";
+    import { resolve } from "$app/paths";
 
     type OrganizationData = Omit<Parameters<typeof authClient.organization.create>[0], "fetchOptions">
 
@@ -47,23 +49,38 @@
 
         isLoading = true;
 
-        const { error: slugError} = await authClient.organization.checkSlug({slug: organizationData.slug});
+        await authClient.organization.checkSlug({slug: organizationData.slug})
+        .then(async (slugRes) => {
+            if(slugRes.error){
+                throw new Error(slugRes.error?.message || "Failed to verify the slug");
+            };
 
-        if(slugError) {
+            await authClient.organization.create(organizationData)
+            .then((createRes) => {
+                if(createRes.error) {
+                    throw new Error(createRes.error?.message || "Failed to create the organization")
+                };
+
+                goto(resolve('/(app)/dashboard/[orgSlug]',{
+                    orgSlug: createRes.data.slug
+                }))
+
+                toast.success("Organization created successfully.")
+                resetForm();
+            })
+            .catch((createErr) => {
+                throw new Error(createErr?.message || "Something went wrong while creating the organization.")
+            })
+
+        })
+        .catch((slugErr) => {
+            console.log(slugErr)
+            toast.error(slugErr?.message || "Organization creation failed while verifying slug.")
+        })
+        .finally(() => {
             isLoading = false;
-            toast.error(slugError.message || "Failed to verify the slug");
-            return;
-        };
+        })
 
-        let {error: orgError} = await authClient.organization.create(organizationData);
-        if(orgError) {
-            isLoading = false;
-            toast.error(orgError.message || "Failed to create the organization")
-            return;
-        };
-
-        toast.success("Organization created successfully.")
-        resetForm();
 	}
 </script>
 

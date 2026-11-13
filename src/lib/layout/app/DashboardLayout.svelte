@@ -5,7 +5,6 @@
 	import * as Sidebar from "#lib/components/ui/sidebar/index.js";
 
 	import AppSidebar from "#lib/components/app/sidebar/app-sidebar.svelte";
-	import Icon from '@lucide/svelte/icons/globe';
 	// import SectionCards from "#lib/components/section-cards.svelte";
 	import SiteHeader from "#lib/components/site-header.svelte";
     import OrgSwitcher from "#lib/components/app/org/OrgSwitcher.svelte";
@@ -15,13 +14,6 @@
 
     let {children, SidebarNav, headerLogoHref, orgSwitcher} : {children?: Snippet, SidebarNav?: Snippet, headerLogoHref?: RouteId, orgSwitcher?:boolean} = $props();
 
-	let team = [
-		{name: "Fionn", logo: Icon, plan: "pro"},
-		{name: "Zarslan", logo: Icon, plan: "pro"},
-		{name: "Frank Bowen", logo: Icon, plan: "pro"},
-		{name: "Zach", logo: Icon, plan: "pro"},
-		{name: "Work", logo: Icon, plan: "pro"},
-	]
 </script>
 
 <Sidebar.Provider
@@ -35,7 +27,7 @@
 	<Sidebar.Inset>
 		<SiteHeader>
 		{#if orgSwitcher}
-			<OrgSwitcher teams={team} />
+			<OrgSwitcher />
 		{/if}
 		</SiteHeader>
 		<div class="flex flex-1 flex-col">

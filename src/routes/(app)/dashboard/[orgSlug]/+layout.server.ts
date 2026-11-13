@@ -1,35 +1,47 @@
-import { error } from '@sveltejs/kit';
 import type { LayoutServerLoad } from './$types';
-import { APIError } from 'better-auth/api';
-import { requireOrganization } from '#lib/server/organizations/guards.js';
 
-export const load: LayoutServerLoad = async ({ params, request }) => {
-    console.log("ORG SLUG Layout Server.ts")
+import { dev } from '$app/env';
+import { requireOrganization } from '#lib/server/organizations/guards.js';
+import { resolve } from '$app/paths';
+import { redirect } from '@sveltejs/kit';
+
+export const load: LayoutServerLoad = async ({ params, request, cookies }) => {
     return requireOrganization({
         request,
         slug: params.orgSlug
     })
         .then((organization) => {
             if (!organization) {
-                error(404, 'Organization not found');
+                redirect(307, resolve('/(app)/dashboard'));
+                // error(404, 'Organization not found');
             }
+
+            cookies.set('__session_org_id', organization.id, {
+                path: '/dashboard',
+                httpOnly: true,
+                secure: !dev,
+                sameSite: 'lax',
+                maxAge: 60 * 60 * 24 * 365
+            });
 
             return {
                 organization
             };
         })
-        .catch((cause) => {
+        .catch(() => {
+            redirect(307, resolve('/(app)/dashboard'));
             // Hide whether an organization exists
             // when the user doesn't have access.
-            if (
-                cause instanceof APIError &&
-                (cause.status === 'BAD_REQUEST' ||
-                    cause.status === 'FORBIDDEN')
-            ) {
-                error(404, 'Organization not found');
-            }
+
+            // if (
+            //     cause instanceof APIError &&
+            //     (cause.status === 'BAD_REQUEST' ||
+            //         cause.status === 'FORBIDDEN')
+            // ) {
+            //     error(404, 'Organization not found');
+            // }
 
             // Unexpected errors should remain 500 errors.
-            throw cause;
+            // throw cause;
         });
 };
