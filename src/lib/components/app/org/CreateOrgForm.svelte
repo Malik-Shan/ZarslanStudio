@@ -12,22 +12,19 @@
     import Spinner from "#lib/components/ui/spinner/spinner.svelte";
     import { goto } from "$app/navigation";
     import { resolve } from "$app/paths";
+    import { getOrgCreationFormStatus } from "#lib/store/org-creation-form.svelte.ts";
 
     type OrganizationData = Omit<Parameters<typeof authClient.organization.create>[0], "fetchOptions">
+
+    let formstatus = getOrgCreationFormStatus();
 
     let organizationData = $state<OrganizationData>({
         name: "",
         slug: "",
         logo: null,
-        metadata: {},
+        metadata: {fakedata: "hello", fakenumber: 0},
         keepCurrentActiveOrganization: false
     })
-
-	let {
-		open = $bindable(false)
-	}: {
-		open: boolean;
-	} = $props();
 
     function resetForm(){
         organizationData = {
@@ -37,7 +34,7 @@
             metadata: {},
             keepCurrentActiveOrganization: false
         };
-        open = false;
+        formstatus.close();
         isLoading = false;
     }
 
@@ -54,6 +51,7 @@
             if(slugRes.error){
                 throw new Error(slugRes.error?.message || "Failed to verify the slug");
             };
+            console.log(organizationData);
 
             await authClient.organization.create(organizationData)
             .then((createRes) => {
@@ -84,7 +82,7 @@
 	}
 </script>
 
-<Dialog.Root bind:open>
+<Dialog.Root bind:open={formstatus.formOpen}>
 	<Dialog.Content class="sm:max-w-sm">
 		<form onsubmit={handleSubmit}>
 			<Dialog.Header class='mb-2'>

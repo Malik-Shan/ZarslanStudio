@@ -1,10 +1,19 @@
 <svelte:head>
 	<title>Dashboard</title>
 </svelte:head>
+<script lang='ts'>
+	import BuildingComplexPlusIcon from '@lucide/svelte/icons/building-complex-plus'
+	import Button from '#lib/components/ui/button/button.svelte';
+	import { getOrgCreationFormStatus } from '#lib/store/org-creation-form.svelte.ts';
 
-<div class="grid auto-rows-min gap-4 md:grid-cols-3">
-	<div class="aspect-video rounded-xl bg-muted/50"></div>
-	<div class="aspect-video rounded-xl bg-muted/50"></div>
-	<div class="aspect-video rounded-xl bg-muted/50"></div>
+	let formstatus = getOrgCreationFormStatus();
+</script>
+
+<div class='w-full h-full flex justify-center items-center'>
+	<Button onclick={() => {
+		formstatus.open();
+		console.log("click")
+	}} variant="ghost" >
+		<BuildingComplexPlusIcon />	
+	</Button>
 </div>
-<div class="min-h-screen flex-1 rounded-xl bg-muted/50 md:min-h-min"></div>

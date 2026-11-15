@@ -1,12 +1,11 @@
 <script lang='ts'>
     import { authClient } from "#lib/auth/authClient.ts";
-    import Button from "#lib/components/ui/button/button.svelte";
     import {Input} from "#lib/components/ui/input/index.js"
-    import Spinner from "#lib/components/ui/spinner/spinner.svelte";
     import { getOrganizationManager } from '#lib/store/organization/manager.svelte.js';
     import { resolve } from "$app/paths";
     import {goto} from '$app/navigation';
     import { toast } from "svelte-sonner";
+    import DangerZone from "#lib/components/app/DangerZone.svelte";
 
     const activeOrg = getOrganizationManager();
 
@@ -32,7 +31,7 @@
             if(res.error){
                 throw (res.error?.message || "Failed to delete organization.")
             }
-            toast.success("Organization deleted successfully" + JSON.stringify(res.data));
+            toast.success("Organization deleted successfully");
 
             goto(resolve('/(app)/dashboard'))
 
@@ -84,23 +83,22 @@
     }
 
 </script>
-<h1>Settings page</h1>
 
-<Input
-    bind:value={orgName}
-    type="text"
-    disabled={updatingOrgName}
-    onkeydown={(e: KeyboardEvent) => {
-        if (e.key === "Enter") {
-            e.preventDefault();
-            updateOrgName();
-        }
-    }}
-/>
+<section class='max-w-250 w-full px-4 mx-auto grid gap-4'>
+    <h1 class='text-2xl font-bold mb-4'>Organization Setting</h1>
+    <Input
+        bind:value={orgName}
+        type="text"
+        disabled={updatingOrgName}
+        onkeydown={(e: KeyboardEvent) => {
+            if (e.key === "Enter") {
+                e.preventDefault();
+                updateOrgName();
+            }
+        }}
+    />
 
-<Button class='cursor-pointer' variant="destructive" onclick={deleteOrg}>
-    {#if deletingOrg}
-        <Spinner /> 
-    {/if}
-    Delete Organization
-</Button>
+
+    <DangerZone bind:deleting={deletingOrg} deletingOrg={deleteOrg} />
+
+</section>
