@@ -51,7 +51,6 @@
             if(slugRes.error){
                 throw new Error(slugRes.error?.message || "Failed to verify the slug");
             };
-            console.log(organizationData);
 
             await authClient.organization.create(organizationData)
             .then((createRes) => {
@@ -72,7 +71,6 @@
 
         })
         .catch((slugErr) => {
-            console.log(slugErr)
             toast.error(slugErr?.message || "Organization creation failed while verifying slug.")
         })
         .finally(() => {

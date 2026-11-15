@@ -24,10 +24,10 @@
 	let {children, SidebarNav, headerLogoHref} : 
 	{children?: Snippet, SidebarNav?: Snippet, headerLogoHref?: RouteId} = $props();
 
+	let activeOrg = $derived(getOrganizationManager().activeOrganization);
 
-	 let breadcrumb = $derived.by<Array<BreadCrumb>>(() => {
+	let breadcrumb = $derived.by<Array<BreadCrumb>>(() => {
 
-		let activeOrg = getOrganizationManager().activeOrganization;
 		let paths = page.url.pathname.split("/")
 
 		 let data:Array<BreadCrumb> = [];
