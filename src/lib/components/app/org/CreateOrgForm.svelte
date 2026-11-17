@@ -17,12 +17,14 @@
     type OrganizationData = Omit<Parameters<typeof authClient.organization.create>[0], "fetchOptions">
 
     let formstatus = getOrgCreationFormStatus();
+    let isLoading = $state<boolean>(false);
+    let slugError = $state<string | undefined | null>(null);
 
     let organizationData = $state<OrganizationData>({
         name: "",
         slug: "",
         logo: null,
-        metadata: {fakedata: "hello", fakenumber: 0},
+        metadata: {},
         keepCurrentActiveOrganization: false
     })
 
@@ -36,9 +38,9 @@
         };
         formstatus.close();
         isLoading = false;
+        slugError = null;
     }
 
-    let isLoading = $state<boolean>(false);
 
 	async function handleSubmit(event: SubmitEvent) {
 		event.preventDefault();
@@ -49,8 +51,12 @@
         await authClient.organization.checkSlug({slug: organizationData.slug})
         .then(async (slugRes) => {
             if(slugRes.error){
+                slugError = slugRes.error.message;
                 throw new Error(slugRes.error?.message || "Failed to verify the slug");
             };
+
+            // adding auto logo for org
+            organizationData.logo = "https://api.dicebear.com/10.x/glass/svg?size=200"+`&seed=${organizationData.slug}`
 
             await authClient.organization.create(organizationData)
             .then((createRes) => {
@@ -81,14 +87,14 @@
 </script>
 
 <Dialog.Root bind:open={formstatus.formOpen}>
-	<Dialog.Content class="sm:max-w-sm">
-		<form onsubmit={handleSubmit}>
-			<Dialog.Header class='mb-2'>
-				<Dialog.Title>Create Organization</Dialog.Title>
-				<Dialog.Description>
-					Create a new organization for your workspace.
-				</Dialog.Description>
-			</Dialog.Header>
+    <Dialog.Content class="sm:max-w-sm">
+        <form onsubmit={handleSubmit}>
+            <Dialog.Header class='mb-2'>
+                <Dialog.Title>Create Organization</Dialog.Title>
+                <Dialog.Description class='mb-2'>
+                    Create a new organization for your workspace.
+                </Dialog.Description>
+            </Dialog.Header>
 
             <Field.Field class='mb-4'>
                 <Input
@@ -96,29 +102,32 @@
                     name="name"
                     bind:value={organizationData.name}
                     oninput={() => organizationData.slug = slugify(organizationData.name)}
-                    placeholder="Organization Name"
+                    placeholder="Unique Organization Name"
                     required
                 />
                 <Field.Description class='text-xs'>Slug: {organizationData.slug}</Field.Description>
+                {#if slugError}
+                    <Field.Error class='text-xs'>Error: {slugError}</Field.Error>
+                {/if}
             </Field.Field>
 
 
-			<Dialog.Footer>
-				<Dialog.Close
-					type="button"
-					class={buttonVariants({ variant: "outline" })}
+            <Dialog.Footer>
+                <Dialog.Close
+                    type="button"
+                    class={buttonVariants({ variant: "outline" })}
                     onclick={resetForm}
-				>
-					Cancel
-				</Dialog.Close>
+                >
+                    Cancel
+                </Dialog.Close>
 
-				<Button type="submit" disabled={organizationData.name.trim().length === 0 || isLoading}>
+                <Button type="submit" disabled={organizationData.name.trim().length === 0 || isLoading}>
                     {#if isLoading}
                         <Spinner />	
                     {/if}
                     Create Organization
-				</Button>
-			</Dialog.Footer>
-		</form>
-	</Dialog.Content>
+                </Button>
+            </Dialog.Footer>
+        </form>
+    </Dialog.Content>
 </Dialog.Root>

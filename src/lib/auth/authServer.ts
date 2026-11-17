@@ -10,6 +10,7 @@ import { drizzleAdapter } from 'better-auth/adapters/drizzle';
 import { sveltekitCookies } from 'better-auth/svelte-kit';
 import { getRequestEvent } from '$app/server';
 import { db } from '#lib/server/db/index.ts';
+import { ac,owner, member, scripter, admin as AdminRole } from './permissions.js';
 
 export const auth = betterAuth({
 	baseURL: ORIGIN,
@@ -25,7 +26,17 @@ export const auth = betterAuth({
 			defaultRole: 'user',
 			adminUserIds:['wxJz9rRb7ZZFFJsLfmDyvMPWaM3E6RRU']
 		}),
-		organization({allowUserToCreateOrganization:true}),
+		organization({
+			allowUserToCreateOrganization:true,
+			ac,
+			roles: {
+				owner,
+				admin: AdminRole,
+				member,
+				scripter
+			}
+		},
+		),
 		lastLoginMethod(),
 		sveltekitCookies(getRequestEvent) // make sure this is the last plugin in the array
 	]

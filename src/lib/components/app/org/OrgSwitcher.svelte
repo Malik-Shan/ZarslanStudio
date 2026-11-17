@@ -35,12 +35,16 @@
 							size="sm"
 							class="rounded-md! after:rounded-md!"
 						>
+							<!-- <Avatar.Image -->
+							<!-- 	class="rounded-md!" -->
+							<!-- 	src={!organization.logo -->
+							<!-- 		? "https://api.dicebear.com/10.x/glass/svg?size=200" + -->
+							<!-- 			`&seed=${organization.id}` -->
+							<!-- 		: organization.logo} -->
+							<!-- /> -->
 							<Avatar.Image
 								class="rounded-md!"
-								src={!organization.logo
-									? "https://api.dicebear.com/10.x/glass/svg?size=200" +
-										`&seed=${organization.id}`
-									: organization.logo}
+								src={organization.logo}
 							/>
 							<Avatar.Fallback class="rounded-md!">
 								ZS
@@ -89,16 +93,18 @@
 								size="sm"
 								class="rounded-md! after:rounded-md!"
 							>
-								{#if !organization.logo}
-									<Avatar.Image
-										class="rounded-md!"
-										src={"https://api.dicebear.com/10.x/glass/svg?size=200" +
-											`&seed=${organization.id}`}
-									/>
-									<Avatar.Fallback class="rounded-md!">
-										ZS
-									</Avatar.Fallback>
-								{/if}
+								<!-- <Avatar.Image -->
+								<!-- 	class="rounded-md!" -->
+								<!-- 	src={"https://api.dicebear.com/10.x/glass/svg?size=200" + -->
+								<!-- 		`&seed=${organization.id}`} -->
+								<!-- /> -->
+								<Avatar.Image
+									class="rounded-md!"
+									src={organization.logo}
+								/>
+								<Avatar.Fallback class="rounded-md!">
+									ZS
+								</Avatar.Fallback>
 							</Avatar.Root>
 						</div>
 

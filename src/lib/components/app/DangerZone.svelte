@@ -11,7 +11,7 @@
 		<Card.Title>Danger Zone</Card.Title>
 		<Card.Description>Description here for the stuff</Card.Description>
 		<Card.Action>
-			<Button onclick={() => deletingOrg()} class='cursor-pointer' variant="destructive">
+			<Button onclick={() => deletingOrg()} class='cursor-pointer mt-auto' variant="destructive">
 				{#if deleting}
 					<Spinner />
 				{:else}
