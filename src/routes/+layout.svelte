@@ -19,4 +19,4 @@
 
 <ModeWatcher defaultMode="system" />
 <Toaster />
-{@render children()}
+{@render children?.()}

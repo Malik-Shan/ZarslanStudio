@@ -2,6 +2,6 @@
     import {page} from '$app/state'
 </script>
 
-<h1>Organization Not Found</h1>
+<h1>{page.error?.status}</h1>
 <h2>{page.error?.message}</h2>
-<h2>{page.error}</h2>
+<h2>{JSON.stringify(page.error)}</h2>

@@ -17,9 +17,9 @@
 	import OrgSwitcher from "#lib/components/app/org/OrgSwitcher.svelte";
 	import { page } from "$app/state";
 	import { getOrganizationManager } from "#lib/store/organization/manager.svelte.ts";
-	 // import DataTable from "#lib/components/data-table.svelte";
+	// import DataTable from "#lib/components/data-table.svelte";
 
-	 // import data from '#lib/components/tabledata.ts';
+	// import data from '#lib/components/tabledata.ts';
 
 	let {children, SidebarNav, headerLogoHref} : 
 	{children?: Snippet, SidebarNav?: Snippet, headerLogoHref?: RouteId} = $props();
@@ -30,25 +30,25 @@
 
 		let paths = page.url.pathname.split("/")
 
-		 let data:Array<BreadCrumb> = [];
+		let data:Array<BreadCrumb> = [];
 
-		 for(let i=2;i<paths.length;i++){
+		for(let i=2;i<paths.length;i++){
 
 			let isActiveOrg:boolean = activeOrg?.slug === paths[i];
 			let jointPaths:string = paths.slice(0, i + 1).join("/");
 
 
-			 data.push({
+			data.push({
 				href: jointPaths,
 				name: !isActiveOrg ? paths[i] : null,
 				component: isActiveOrg ? OrgSwitcher : null,
 				next: i + 1 < paths.length
-			 })
-		 }
+			})
+		}
 
 		return data;
 
-	 })
+	})
 
 </script>
 

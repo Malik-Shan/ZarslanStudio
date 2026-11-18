@@ -14,10 +14,6 @@ export class OrganizationManager {
     return this.getOrganizationList() ?? [];
   })
 
-  // get organizations() {
-  //   return this.getOrganizationList() ?? [];
-  // }
-
   activeOrganization = $derived.by<Organization | null>(() => {
     const serverOrg = this.getServerOrganization();
 
@@ -28,17 +24,6 @@ export class OrganizationManager {
         serverOrg
     );
   })
-
-  // get activeOrganization() {
-  //   const serverOrg = this.getServerOrganization();
-  //
-  //   if (!serverOrg) return null;
-  //
-  //   return (
-  //     this.organizations.find((org) => org.id === serverOrg.id) ??
-  //     serverOrg
-  //   );
-  // }
 }
 
 export const [

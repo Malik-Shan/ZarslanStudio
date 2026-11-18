@@ -90,6 +90,15 @@
 
 
     };
+    async function t(){
+
+         return await authClient.organization.hasPermission({
+            permissions:{
+                member: ['create', 'delete'],
+                script: ['create']
+            }
+        })
+    }
 
     let {data}: PageProps = $props();
 
@@ -140,6 +149,12 @@
 
             </Card.Root>
 
+            {#await t()}
+                <p>Loading</p>
+            {:then res} 
+               <span>{JSON.stringify(res)}</span> 
+            {/await}
+
             <DangerZone bind:deleting={deletingOrg} deletingOrg={deleteOrg} />
         </Tabs.Content>
 
@@ -158,7 +173,7 @@
                 <Table.Body>
 
                     {#each data.fullOrganization?.members as member (member.id)}
-                        
+
                         <Table.Row class=''>
                             <Table.Cell class='flex flex-row items-center gap-2'>
                                 <Avatar.Root size="lg">

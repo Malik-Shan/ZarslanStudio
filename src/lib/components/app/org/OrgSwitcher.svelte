@@ -74,50 +74,53 @@
 			Organizations
 		</DropdownMenu.Label>
 
-		{#each org.organizations as organization (organization.id)}
-			<DropdownMenu.Item
-				// onSelect={() => (activeTeam = team)}
-				class="cursor-pointer gap-2 p-1 mb-1.5"
-			>
-				{#snippet child({ props })}
-					<a
-						{...props}
-						href={resolve("/(app)/dashboard/[orgSlug]", {
-							orgSlug: organization.slug,
-						})}
-					>
-						<div
-							class="flex size-6 items-center justify-center rounded-md border"
+		<div class='max-h-100 overflow-y-auto'>
+			{#each org.organizations as organization (organization.id)}
+				<DropdownMenu.Item
+					// onSelect={() => (activeTeam = team)}
+					class="cursor-pointer gap-2 p-1 mb-1.5"
+				>
+					{#snippet child({ props })}
+						<a
+							{...props}
+							href={resolve("/(app)/dashboard/[orgSlug]", {
+								orgSlug: organization.slug,
+							})}
 						>
-							<Avatar.Root
-								size="sm"
-								class="rounded-md! after:rounded-md!"
+							<div
+								class="flex size-6 items-center justify-center rounded-md border"
 							>
-								<!-- <Avatar.Image -->
-								<!-- 	class="rounded-md!" -->
-								<!-- 	src={"https://api.dicebear.com/10.x/glass/svg?size=200" + -->
-								<!-- 		`&seed=${organization.id}`} -->
-								<!-- /> -->
-								<Avatar.Image
-									class="rounded-md!"
-									src={organization.logo}
-								/>
-								<Avatar.Fallback class="rounded-md!">
-									ZS
-								</Avatar.Fallback>
-							</Avatar.Root>
-						</div>
+								<Avatar.Root
+									size="sm"
+									class="rounded-md! after:rounded-md!"
+								>
+									<!-- <Avatar.Image -->
+									<!-- 	class="rounded-md!" -->
+									<!-- 	src={"https://api.dicebear.com/10.x/glass/svg?size=200" + -->
+									<!-- 		`&seed=${organization.id}`} -->
+									<!-- /> -->
+									<Avatar.Image
+										class="rounded-md!"
+										src={organization.logo}
+									/>
+									<Avatar.Fallback class="rounded-md!">
+										ZS
+									</Avatar.Fallback>
+								</Avatar.Root>
+							</div>
 
-						<span class="truncate text-[13px]"
+							<span class="truncate text-[13px]"
 							>{organization.name}</span
-						>
-						{#if org.activeOrganization?.id === organization.id}
-							<Check class="ms-auto" strokeWidth={3} />
-						{/if}
-					</a>
-				{/snippet}
-			</DropdownMenu.Item>
-		{/each}
+							>
+							{#if org.activeOrganization?.id === organization.id}
+								<Check class="ms-auto" strokeWidth={3} />
+							{/if}
+						</a>
+					{/snippet}
+				</DropdownMenu.Item>
+			{/each}
+		</div>
+
 
 		<DropdownMenu.Separator />
 

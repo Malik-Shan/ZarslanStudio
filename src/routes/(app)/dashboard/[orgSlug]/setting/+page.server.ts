@@ -1,8 +1,9 @@
 import { auth } from "#lib/auth/authServer.ts";
+import { redirect } from "@sveltejs/kit";
 import type { PageServerLoad } from "./$types";
 
-export const load: PageServerLoad = async ({locals, params, request}) => {
-	if(!locals.session) return;
+export const load: PageServerLoad = async ({locals,params,request}) => {
+	if(!locals.session) redirect(301, "/(app)/signin");
 
 	const fullOrganization = await auth.api.getFullOrganization({
 		query: {
