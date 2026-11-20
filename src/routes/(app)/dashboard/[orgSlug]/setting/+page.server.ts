@@ -1,5 +1,5 @@
 import { auth } from "#lib/auth/authServer.ts";
-import { redirect } from "@sveltejs/kit";
+import { error, redirect } from "@sveltejs/kit";
 import type { PageServerLoad } from "./$types";
 
 export const load: PageServerLoad = async ({locals,params,request}) => {
@@ -12,9 +12,12 @@ export const load: PageServerLoad = async ({locals,params,request}) => {
 		headers: request.headers
 	})
 
+	if(!fullOrganization) error(404, "Organization not found.");
+
 	const org_update = await auth.api.hasPermission({
 		headers: request.headers,
 		body: {
+			organizationId: fullOrganization.id,
 			permissions: {
 				organization: ['update'],
 			}
@@ -24,6 +27,7 @@ export const load: PageServerLoad = async ({locals,params,request}) => {
 	const org_delete = await auth.api.hasPermission({
 		headers: request.headers,
 		body: {
+			organizationId: fullOrganization.id,
 			permissions: {
 				organization: ['delete'],
 			}
@@ -33,6 +37,7 @@ export const load: PageServerLoad = async ({locals,params,request}) => {
 	const member_create = await auth.api.hasPermission({
 		headers: request.headers,
 		body: {
+			organizationId: fullOrganization.id,
 			permissions: {
 				member: ['create'],
 			}
@@ -41,6 +46,7 @@ export const load: PageServerLoad = async ({locals,params,request}) => {
 	const member_delete = await auth.api.hasPermission({
 		headers: request.headers,
 		body: {
+			organizationId: fullOrganization.id,
 			permissions: {
 				member: ['delete'],
 			}
@@ -49,6 +55,7 @@ export const load: PageServerLoad = async ({locals,params,request}) => {
 	const member_update = await auth.api.hasPermission({
 		headers: request.headers,
 		body: {
+			organizationId: fullOrganization.id,
 			permissions: {
 				member: ['update'],
 			}
@@ -57,6 +64,7 @@ export const load: PageServerLoad = async ({locals,params,request}) => {
 	const invitation_create = await auth.api.hasPermission({
 		headers: request.headers,
 		body: {
+			organizationId: fullOrganization.id,
 			permissions: {
 				invitation: ['create'],
 			}
@@ -65,6 +73,7 @@ export const load: PageServerLoad = async ({locals,params,request}) => {
 	const invitation_cancel = await auth.api.hasPermission({
 		headers: request.headers,
 		body: {
+			organizationId: fullOrganization.id,
 			permissions: {
 				invitation: ['cancel'],
 			}

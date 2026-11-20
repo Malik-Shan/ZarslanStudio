@@ -3,11 +3,12 @@
 	import SunIcon from "@lucide/svelte/icons/sun";
 	import { resetMode, setMode } from "mode-watcher";
 	import * as DropdownMenu from "#lib/components/ui/dropdown-menu/index.js";
-	import { buttonVariants } from "#lib/components/ui/button/index.js";
+	import { type ButtonSize,type ButtonVariant, buttonVariants } from "#lib/components/ui/button/index.js";
+	let {variant = "outline", size = 'icon', class:className}: {variant?:ButtonVariant, size?:ButtonSize, class?: string} = $props();
 </script>
  
 <DropdownMenu.Root>
-	<DropdownMenu.Trigger class={buttonVariants({ variant: "outline", size: "icon", class: "cursor-pointer" })}>
+	<DropdownMenu.Trigger class={buttonVariants({ variant, size, class: 'cursor-pointer ' + className })}>
 		<SunIcon
 			class="h-[1.2rem] w-[1.2rem] scale-100 rotate-0 transition-all! dark:scale-0 dark:-rotate-90"
 		/>

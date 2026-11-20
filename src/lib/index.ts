@@ -7,3 +7,11 @@ export function slugify(value: string) {
         .replace(/\s+/g, "-")
         .replace(/-+/g, "-");
 }
+
+
+export function isSafeReturnUrl(value: string | null): value is string {
+	return !!value &&
+		value.startsWith('/') &&
+		!value.startsWith('//') &&
+		!value.includes('\\');
+}

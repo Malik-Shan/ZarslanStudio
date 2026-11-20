@@ -1,5 +1,6 @@
 import { redirect } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
+import { isSafeReturnUrl } from '#lib';
 
 export const load: PageServerLoad = async ({ url, locals }) => {
 	const returnTo = url.searchParams.get('returnTo');
@@ -14,9 +15,3 @@ export const load: PageServerLoad = async ({ url, locals }) => {
 	};
 };
 
-function isSafeReturnUrl(value: string | null): value is string {
-	return !!value &&
-		value.startsWith('/') &&
-		!value.startsWith('//') &&
-		!value.includes('\\');
-}

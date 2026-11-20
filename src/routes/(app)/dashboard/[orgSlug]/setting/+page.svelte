@@ -96,7 +96,8 @@
             permissions:{
                 member: ['create', 'delete'],
                 script: ['create']
-            }
+            },
+            organizationId: orgManager.activeOrganization!.id
         })
     }
 

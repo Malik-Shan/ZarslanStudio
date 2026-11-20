@@ -2,7 +2,7 @@ import type { Handle } from '@sveltejs/kit/hooks';
 import { building } from '$app/env';
 import { auth } from '#lib/auth/authServer.ts';
 import { svelteKitHandler } from 'better-auth/svelte-kit';
-import { redirect } from '@sveltejs/kit';
+import { error, redirect } from '@sveltejs/kit';
 
 interface WorkSpaceRole {
 	path: `/${string}`,
@@ -10,8 +10,12 @@ interface WorkSpaceRole {
 }
 
 const SpacesWithRole = {
-	user: {
+	app: {
 		path: '/dashboard',
+		role: 'user'
+	},
+	user: {
+		path: '/user',
 		role: 'user'
 	},
 	employee: {
@@ -19,6 +23,7 @@ const SpacesWithRole = {
 		role: 'employee'
 	}
 } as const satisfies Record<string, WorkSpaceRole>
+
 const signInPage = "/signin"
 
 const handleBetterAuth: Handle = async ({ event, resolve }) => {
@@ -28,13 +33,15 @@ const handleBetterAuth: Handle = async ({ event, resolve }) => {
 
 	const { pathname, search } = event.url;
 
-	const isEmployeeRoute = pathname.startsWith(SpacesWithRole.employee.path);
-	const isUserRoute = pathname.startsWith(SpacesWithRole.user.path);
+	// TODO: Fix this to be more useable
+	const employeeRoute = pathname.startsWith(SpacesWithRole.employee.path);
+	const appRoute = pathname.startsWith(SpacesWithRole.app.path);
+	const userRoute = pathname.startsWith(SpacesWithRole.user.path);
 
 	event.locals.session = session?.session ?? null;
 	event.locals.user = session?.user ?? null;
 
-	if (isEmployeeRoute || isUserRoute) {
+	if (employeeRoute || appRoute || userRoute) {
 
 		if (!session) {
 			const returnTo = encodeURIComponent(pathname + search);
@@ -45,8 +52,10 @@ const handleBetterAuth: Handle = async ({ event, resolve }) => {
 
 		if (!roles?.includes('admin')) {
 
-			if (isEmployeeRoute && !roles?.includes(SpacesWithRole.employee.role)) {redirect(302,'/404')}
-			if (isUserRoute && !roles?.includes(SpacesWithRole.user.role)) {redirect(302,'/404')}
+			// TODO: fix this to be more reuseable
+			if (employeeRoute && !roles?.includes(SpacesWithRole.employee.role)) {redirect(302,'/404')}
+			if (appRoute && !roles?.includes(SpacesWithRole.app.role)) {error(404, "Page not found.")}
+			if (userRoute && !roles?.includes(SpacesWithRole.user.role)) {redirect(302,'/404')}
 		}
 	}
 
