@@ -5,7 +5,7 @@ export const variables = defineEnvVars({
 	DATABASE_AUTH_TOKEN: {
 		description: 'Auth token for the [Turso](https://turso.tech) database.'
 	},
-	ORIGIN: {
+	BETTER_AUTH_URL: {
 		description: 'The app origin (base URL), e.g. `http://localhost:5173`.'
 	},
 	BETTER_AUTH_SECRET: {

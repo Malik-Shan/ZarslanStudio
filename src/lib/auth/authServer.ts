@@ -1,5 +1,5 @@
 import {
-	ORIGIN,
+	BETTER_AUTH_URL,
 	GOOGLE_CLIENT_ID,
 	GOOGLE_CLIENT_SECRET
 } from '$app/env/private';
@@ -13,7 +13,7 @@ import { db } from '#lib/server/db/index.ts';
 import { ac,owner, member, scripter, admin as AdminRole } from './permissions.js';
 
 export const auth = betterAuth({
-	baseURL: ORIGIN,
+	baseURL: BETTER_AUTH_URL,
 	database: drizzleAdapter(db, { provider: 'sqlite' }),
 	socialProviders: {
 		google: {
