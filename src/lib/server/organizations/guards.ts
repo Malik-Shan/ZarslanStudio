@@ -1,16 +1,10 @@
-import { auth } from '#lib/auth/authServer.js';
+import type { RequestEvent } from '@sveltejs/kit';
 
-export function requireOrganization({
-    request,
-    slug
-}: {
-    request: Request;
-    slug: string;
-}) {
-    return auth.api.getOrganization({
+export function requireOrganization(event: RequestEvent) {
+    return event.locals.auth.api.getOrganization({
         query: {
-            organizationSlug: slug
+            organizationSlug: event.params.orgSlug
         },
-        headers: request.headers
+        headers: event.request.headers
     });
 }

@@ -1,13 +1,19 @@
 import type { Handle } from '@sveltejs/kit/hooks';
-import { building } from '$app/env';
-import { auth } from '#lib/auth/authServer.ts';
-import { svelteKitHandler } from 'better-auth/svelte-kit';
-import { error, redirect } from '@sveltejs/kit';
-
 interface WorkSpaceRole {
 	path: `/${string}`,
 	role: 'admin' | 'user' | 'employee'
 }
+
+
+import { svelteKitHandler } from 'better-auth/svelte-kit';
+
+import { createLibSqlClient, createD1Client } from './lib/server/db';
+import { createAuth } from './lib/server/auth';
+
+import { error, redirect } from '@sveltejs/kit';
+import {DATABASE_URL} from "$app/env/private";
+import { building } from '$app/env';
+
 
 const SpacesWithRole = {
 	app: {
@@ -27,7 +33,20 @@ const SpacesWithRole = {
 const signInPage = "/signin"
 
 const handleBetterAuth: Handle = async ({ event, resolve }) => {
-	const session = await auth.api.getSession({
+
+	const d1 = event.platform?.env.zarslanstudio_db_dev;
+	if(d1) {
+		event.locals.db = createD1Client(d1);
+	} else if(DATABASE_URL){
+		event.locals.db = createLibSqlClient(DATABASE_URL);
+	} else {
+		throw new Error("No database found.");
+	}
+
+	const auth = createAuth(event.locals.db);
+	event.locals.auth = auth;
+
+	const session = await event.locals.auth.api.getSession({
 		headers: event.request.headers
 	});
 

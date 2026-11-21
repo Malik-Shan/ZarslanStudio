@@ -2,7 +2,7 @@ import { enhancedImages } from '@sveltejs/enhanced-img';
 import tailwindcss from '@tailwindcss/vite';
 import { defineConfig } from 'vitest/config';
 import { playwright } from '@vitest/browser-playwright';
-import adapter from '@sveltejs/adapter-vercel';
+import adapter from '@sveltejs/adapter-cloudflare';
 import { sveltekit } from '@sveltejs/kit/vite';
 
 export default defineConfig({

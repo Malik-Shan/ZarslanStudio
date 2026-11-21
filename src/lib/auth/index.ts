@@ -9,8 +9,10 @@ import {admin, organization, lastLoginMethod} from 'better-auth/plugins'
 import { drizzleAdapter } from 'better-auth/adapters/drizzle';
 import { sveltekitCookies } from 'better-auth/svelte-kit';
 import { getRequestEvent } from '$app/server';
-import { db } from '#lib/server/db/index.ts';
+import { getDb } from '#lib/server/db/index.js';
 import { ac,owner, member, scripter, admin as AdminRole } from './permissions.js';
+
+const db = getDb({libsqlBinding: 'file:db.sqlite'});
 
 export const auth = betterAuth({
 	baseURL: ORIGIN,

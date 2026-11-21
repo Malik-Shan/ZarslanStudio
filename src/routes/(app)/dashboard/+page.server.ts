@@ -1,12 +1,11 @@
 import { redirect } from '@sveltejs/kit';
 import type { PageServerLoad } from './$types';
-import { auth } from '#lib/auth/authServer.js';
 
-export const load: PageServerLoad = async ({ cookies, request }) => {
+export const load: PageServerLoad = async ({ cookies, request, locals }) => {
     const session_org_id = cookies.get('__session_org_id');
 
     if (session_org_id) {
-        const organization = await auth.api.getOrganization({
+        const organization = await locals.auth.api.getOrganization({
             query: {
                 organizationId: session_org_id
             },
@@ -27,7 +26,7 @@ export const load: PageServerLoad = async ({ cookies, request }) => {
         };
     };
 
-    const organizations = await auth.api.listOrganizations({
+    const organizations = await locals.auth.api.listOrganizations({
         headers: request.headers
     });
 

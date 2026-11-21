@@ -13,11 +13,15 @@
 | `pnpm db:migrate` | Applies migrations to the database. |
 | `pnpm db:studio` | Opens the visual database management interface. |
 | `pnpm auth:schema` | Generates Better Auth database schema. |
+| `pnpm d1:generate` | Generates cloudflare d1 schema. |
+| `pnpm d1:migrate` | Applies migration to d1 database. |
+| `pnpm d1:migrate-remote` | Applies migration to d1 remote database. |
+
 ## Todo List
 Priority:
-- [ ] Ability to select org and redirect.
-- [ ] Show the active or no-org-select if on the `dashboard`
-- [ ] User --> profile setting (/dahboard/profile)
+- [x] Ability to select org and redirect.
+- [x] Show the active or no-org-select if on the `dashboard`
+- [x] User --> profile setting (/dahboard/profile)
 - [ ] Org --> setting page (showing members & all invitations sent)
 - [ ] User --> org page (ability to see, leave orgs & see pending invitations sent to you)
 - [ ] org package creation (provindg all the details) - since it's all custom there should be a way for to check for completion of certain package or it's limits by us. so user can create within certains contrains requiring they provinde some info for us to easily fetch it.

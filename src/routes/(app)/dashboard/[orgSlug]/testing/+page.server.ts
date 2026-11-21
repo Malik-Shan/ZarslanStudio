@@ -1,5 +1,4 @@
 import type { PageServerLoad } from "./$types";
-import { auth } from "#lib/auth/authServer.ts";
 import { redirect } from "@sveltejs/kit";
 import { resolve } from "$app/paths";
 import { error } from "console";
@@ -7,7 +6,7 @@ import { error } from "console";
 export const load: PageServerLoad = async ({locals, params, request}) => {
 	if(!locals.session) error(404, "Page doesn't exist");
 
-	const fullOrganization = await auth.api.getFullOrganization({
+	const fullOrganization = await locals.auth.api.getFullOrganization({
 		query: {
 			organizationSlug: params.orgSlug,
 		},
@@ -16,7 +15,7 @@ export const load: PageServerLoad = async ({locals, params, request}) => {
 
 	if(!fullOrganization) redirect(307, resolve('/(app)/dashboard'))
 
-	const org_delete = await auth.api.hasPermission({
+	const org_delete = await locals.auth.api.hasPermission({
 		headers: request.headers,
 		body: {
 			organizationId: fullOrganization.id,

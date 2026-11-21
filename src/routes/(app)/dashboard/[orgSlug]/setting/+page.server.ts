@@ -1,11 +1,10 @@
-import { auth } from "#lib/auth/authServer.ts";
 import { error, redirect } from "@sveltejs/kit";
 import type { PageServerLoad } from "./$types";
 
 export const load: PageServerLoad = async ({locals,params,request}) => {
 	if(!locals.session) redirect(301, "/(app)/signin");
 
-	const fullOrganization = await auth.api.getFullOrganization({
+	const fullOrganization = await locals.auth.api.getFullOrganization({
 		query: {
 			organizationSlug: params.orgSlug,
 		},
@@ -14,7 +13,7 @@ export const load: PageServerLoad = async ({locals,params,request}) => {
 
 	if(!fullOrganization) error(404, "Organization not found.");
 
-	const org_update = await auth.api.hasPermission({
+	const org_update = await locals.auth.api.hasPermission({
 		headers: request.headers,
 		body: {
 			organizationId: fullOrganization.id,
@@ -24,7 +23,7 @@ export const load: PageServerLoad = async ({locals,params,request}) => {
 		}
 	})
 
-	const org_delete = await auth.api.hasPermission({
+	const org_delete = await locals.auth.api.hasPermission({
 		headers: request.headers,
 		body: {
 			organizationId: fullOrganization.id,
@@ -34,7 +33,7 @@ export const load: PageServerLoad = async ({locals,params,request}) => {
 		}
 	})
 
-	const member_create = await auth.api.hasPermission({
+	const member_create = await locals.auth.api.hasPermission({
 		headers: request.headers,
 		body: {
 			organizationId: fullOrganization.id,
@@ -43,7 +42,7 @@ export const load: PageServerLoad = async ({locals,params,request}) => {
 			}
 		}
 	})
-	const member_delete = await auth.api.hasPermission({
+	const member_delete = await locals.auth.api.hasPermission({
 		headers: request.headers,
 		body: {
 			organizationId: fullOrganization.id,
@@ -52,7 +51,7 @@ export const load: PageServerLoad = async ({locals,params,request}) => {
 			}
 		}
 	})
-	const member_update = await auth.api.hasPermission({
+	const member_update = await locals.auth.api.hasPermission({
 		headers: request.headers,
 		body: {
 			organizationId: fullOrganization.id,
@@ -61,7 +60,7 @@ export const load: PageServerLoad = async ({locals,params,request}) => {
 			}
 		}
 	})
-	const invitation_create = await auth.api.hasPermission({
+	const invitation_create = await locals.auth.api.hasPermission({
 		headers: request.headers,
 		body: {
 			organizationId: fullOrganization.id,
@@ -70,7 +69,7 @@ export const load: PageServerLoad = async ({locals,params,request}) => {
 			}
 		}
 	})
-	const invitation_cancel = await auth.api.hasPermission({
+	const invitation_cancel = await locals.auth.api.hasPermission({
 		headers: request.headers,
 		body: {
 			organizationId: fullOrganization.id,

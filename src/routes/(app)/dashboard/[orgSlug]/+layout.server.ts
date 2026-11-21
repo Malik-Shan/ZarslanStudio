@@ -5,18 +5,15 @@ import { requireOrganization } from '#lib/server/organizations/guards.js';
 import { resolve } from '$app/paths';
 import { redirect } from '@sveltejs/kit';
 
-export const load: LayoutServerLoad = async ({ params, request, cookies }) => {
-    return requireOrganization({
-        request,
-        slug: params.orgSlug
-    })
+export const load: LayoutServerLoad = async (event) => {
+    return requireOrganization(event)
         .then((organization) => {
             if (!organization) {
                 redirect(307, resolve('/(app)/dashboard'));
                 // error(404, 'Organization not found');
             }
 
-            cookies.set('__session_org_id', organization.id, {
+            event.cookies.set('__session_org_id', organization.id, {
                 path: '/dashboard',
                 httpOnly: true,
                 secure: !dev,

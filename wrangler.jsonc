@@ -1,0 +1,26 @@
+{
+	"$schema": "node_modules/wrangler/config-schema.json",
+	"name": "zarslanstudio",
+	"compatibility_date": "2026-11-18",
+	"main": ".svelte-kit/cloudflare/_worker.js",
+	"compatibility_flags": [
+		"nodejs_compat"
+	],
+	"assets": {
+		"binding": "ASSETS",
+		"directory": ".svelte-kit/cloudflare"
+	},
+	"workers_dev": true,
+	"preview_urls": true,
+	"observability": {
+		"enabled": true
+	},
+	"d1_databases": [
+		{
+			"binding": "zarslanstudio_db_dev",
+			"database_name": "zarslanstudio-db-dev",
+			"database_id": "0d626c05-83cc-44c0-92f8-132bc6fe4713",
+			"migrations_dir": "./src/lib/server/db/migrations"
+		}
+	]
+}
