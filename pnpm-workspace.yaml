@@ -1,5 +1,5 @@
 allowBuilds:
   sharp: true
   esbuild: true
-  workerd: false
+  workerd: true 
 engineStrict: true
