@@ -29,10 +29,7 @@ export const createAuth = (database: DrizzleClient) => {
          }
       },
       plugins: [
-         admin({
-            defaultRole: 'user',
-            adminUserIds:['wxJz9rRb7ZZFFJsLfmDyvMPWaM3E6RRU']
-         }),
+         admin(),
          organization({
             allowUserToCreateOrganization:true,
             ac,
@@ -45,11 +42,9 @@ export const createAuth = (database: DrizzleClient) => {
          },
          ),
          lastLoginMethod(),
-         sveltekitCookies(getRequestEvent) // make sure this is the last plugin in the array
+         sveltekitCookies(getRequestEvent)
       ]
    });
 }
 
-export type BetterAuth = ReturnType<typeof createAuth>;
-
-
+export type Auth = ReturnType<typeof createAuth>;

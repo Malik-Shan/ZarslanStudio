@@ -1,6 +1,6 @@
 import type {User, Session} from 'better-auth';
 import type {DrizzleClient} from '#lib/server/db';
-import type {BetterAuth} from '#lib/server/auth';
+import type {Auth} from '#lib/server/auth';
 
 // See https://svelte.dev/docs/kit/types#app.d.ts
 // for information about these interfaces
@@ -14,7 +14,7 @@ declare global {
 
 		interface Locals { 
 			db: DrizzleClient;
-			auth: BetterAuth;
+			auth: Auth;
 			user: User; 
 			session: Session;
 		}

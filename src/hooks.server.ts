@@ -65,13 +65,7 @@ const handleBetterAuth: Handle = async ({ event, resolve }) => {
 
 		if (!session) {
 			const returnTo = encodeURIComponent(pathname + search);
-			// redirect(303, `${signInPage}?returnTo=${returnTo}`)
-			return new Response(null, {
-				status: 303,
-				headers: {
-					location: `${signInPage}?returnTo=${returnTo}`
-				}
-			})
+			redirect(303, `${signInPage}?returnTo=${returnTo}`)
 		}
 
 
@@ -82,13 +76,7 @@ const handleBetterAuth: Handle = async ({ event, resolve }) => {
 			if (employeeRoute && !roles?.includes(SpacesWithRole.employee.role) || 
 				appRoute && !roles?.includes(SpacesWithRole.app.role)||
 				userRoute && !roles?.includes(SpacesWithRole.user.role)) {
-				// error(404, "Page not found")
-				return new Response("Page not found", {
-					status: 404,
-					headers: {
-						location: '/404'
-					}
-				})
+				error(404, "Page not found")
 			}
 		}
 	}

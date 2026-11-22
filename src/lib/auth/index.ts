@@ -9,10 +9,11 @@ import {admin, organization, lastLoginMethod} from 'better-auth/plugins'
 import { drizzleAdapter } from 'better-auth/adapters/drizzle';
 import { sveltekitCookies } from 'better-auth/svelte-kit';
 import { getRequestEvent } from '$app/server';
-import { getDb } from '#lib/server/db/index.js';
 import { ac,owner, member, scripter, admin as AdminRole } from './permissions.js';
+import { createD1Client } from '#lib/server/db/index.js';
+import { env } from 'cloudflare:workers';
 
-const db = getDb({libsqlBinding: 'file:db.sqlite'});
+const db = createD1Client(env.zarslanstudio_db_dev);
 
 export const auth = betterAuth({
 	baseURL: BETTER_AUTH_URL,
@@ -24,10 +25,7 @@ export const auth = betterAuth({
 		}
 	},
 	plugins: [
-		admin({
-			defaultRole: 'user',
-			adminUserIds:['wxJz9rRb7ZZFFJsLfmDyvMPWaM3E6RRU']
-		}),
+		admin(),
 		organization({
 			allowUserToCreateOrganization:true,
 			ac,
