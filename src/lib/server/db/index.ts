@@ -9,7 +9,7 @@ export function createLibSqlClient(url: string): LibSQLDatabase<typeof schema> {
 };
 
 export function createD1Client(database: D1Database): DrizzleD1Database<typeof schema> {
-   return drizzleD1(database);
+   return drizzleD1(database, {schema});
 }
 
 export type DrizzleClient = ReturnType<typeof createLibSqlClient> | ReturnType<typeof createD1Client>;

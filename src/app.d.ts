@@ -7,9 +7,9 @@ import type {BetterAuth} from '#lib/server/auth';
 declare global {
 	namespace App {
 		interface Platform {
-			env: Env,
-			cf: CfProperties,
-			ctx: ExecutionContext
+			env: Env;
+			cf: CfProperties;
+			ctx: ExecutionContext;
 		}
 
 		interface Locals { 

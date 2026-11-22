@@ -1,18 +1,18 @@
 import type { Handle } from '@sveltejs/kit/hooks';
+import {env} from 'cloudflare:workers';
 interface WorkSpaceRole {
 	path: `/${string}`,
 	role: 'admin' | 'user' | 'employee'
 }
-
 
 import { svelteKitHandler } from 'better-auth/svelte-kit';
 
 import { createLibSqlClient, createD1Client } from './lib/server/db';
 import { createAuth } from './lib/server/auth';
 
-import { error, redirect } from '@sveltejs/kit';
 import {DATABASE_URL} from "$app/env/private";
 import { building } from '$app/env';
+import { error, redirect } from '@sveltejs/kit';
 
 
 const SpacesWithRole = {
@@ -34,7 +34,7 @@ const signInPage = "/signin"
 
 const handleBetterAuth: Handle = async ({ event, resolve }) => {
 
-	const d1 = event.platform?.env.zarslanstudio_db_dev;
+	const d1 = env.zarslanstudio_db_dev;
 	if(d1) {
 		event.locals.db = createD1Client(d1);
 	} else if(DATABASE_URL){
@@ -50,6 +50,7 @@ const handleBetterAuth: Handle = async ({ event, resolve }) => {
 		headers: event.request.headers
 	});
 
+
 	const { pathname, search } = event.url;
 
 	// TODO: Fix this to be more useable
@@ -64,17 +65,31 @@ const handleBetterAuth: Handle = async ({ event, resolve }) => {
 
 		if (!session) {
 			const returnTo = encodeURIComponent(pathname + search);
-			redirect(303, `${signInPage}?returnTo=${returnTo}`);
+			// redirect(303, `${signInPage}?returnTo=${returnTo}`)
+			return new Response(null, {
+				status: 303,
+				headers: {
+					location: `${signInPage}?returnTo=${returnTo}`
+				}
+			})
 		}
+
 
 		const roles = session.user.role?.split(',');
 
 		if (!roles?.includes('admin')) {
-
 			// TODO: fix this to be more reuseable
-			if (employeeRoute && !roles?.includes(SpacesWithRole.employee.role)) {redirect(302,'/404')}
-			if (appRoute && !roles?.includes(SpacesWithRole.app.role)) {error(404, "Page not found.")}
-			if (userRoute && !roles?.includes(SpacesWithRole.user.role)) {redirect(302,'/404')}
+			if (employeeRoute && !roles?.includes(SpacesWithRole.employee.role) || 
+				appRoute && !roles?.includes(SpacesWithRole.app.role)||
+				userRoute && !roles?.includes(SpacesWithRole.user.role)) {
+				// error(404, "Page not found")
+				return new Response("Page not found", {
+					status: 404,
+					headers: {
+						location: '/404'
+					}
+				})
+			}
 		}
 	}
 

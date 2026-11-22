@@ -34,7 +34,9 @@ export const load: PageServerLoad = async ({ cookies, request, locals }) => {
         return {
             organization: null
         };
-    };
+    } else {
+        // redirect(307, `/dashboard/${organizations[0].slug}`);
+    }
 
     // cookies.set('__session_org_id', organizations[0].id, {
     //     path: '/dashboard',
@@ -44,5 +46,4 @@ export const load: PageServerLoad = async ({ cookies, request, locals }) => {
     //     maxAge: 60 * 60 * 24 * 365
     // });
 
-    redirect(307, `/dashboard/${organizations[0].slug}`);
 };

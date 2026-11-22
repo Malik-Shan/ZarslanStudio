@@ -1,5 +1,6 @@
 import {
    BETTER_AUTH_URL,
+   BETTER_AUTH_SECRET,
 	GOOGLE_CLIENT_ID,
 	GOOGLE_CLIENT_SECRET
 } from '$app/env/private';
@@ -17,6 +18,7 @@ import type { DrizzleClient } from '#lib/server/db/index.js';
 export const createAuth = (database: DrizzleClient) => {
    return betterAuth({
       baseURL: BETTER_AUTH_URL,
+      secret: BETTER_AUTH_SECRET,
       database: drizzleAdapter(database, { 
          schema,
          provider: 'sqlite' }),
