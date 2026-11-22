@@ -2,13 +2,11 @@
 	"$schema": "node_modules/wrangler/config-schema.json",
 	"name": "zarslanstudio",
 	"compatibility_date": "2026-11-18",
-	// "main": ".svelte-kit/cloudflare/_worker.js",
 	"compatibility_flags": [
 		"nodejs_als"
 	],
 	"assets": {
-		"binding": "ASSETS",
-		// "directory": ".svelte-kit/cloudflare"
+		"binding": "ASSETS"
 	},
 	"observability": {
 		"enabled": true
