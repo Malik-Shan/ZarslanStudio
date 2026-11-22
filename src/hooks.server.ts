@@ -33,7 +33,6 @@ const SpacesWithRole = {
 const signInPage = "/signin"
 
 const handleBetterAuth: Handle = async ({ event, resolve }) => {
-
 	const d1 = env.zarslanstudio_db_dev;
 	if(d1) {
 		event.locals.db = createD1Client(d1);

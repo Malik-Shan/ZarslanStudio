@@ -16,7 +16,8 @@ export default defineConfig({
 					filename.split(/[/\\]/).includes('node_modules') ? undefined : true
 			},
 			adapter: adapter({
-				worker: true
+				worker: true,
+				config: "wrangler.jsonc"
 			})
 		})
 	],
