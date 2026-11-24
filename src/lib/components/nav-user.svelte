@@ -11,11 +11,13 @@
 	import * as DropdownMenu from "#lib/components/ui/dropdown-menu/index.js";
 	import * as Sidebar from "#lib/components/ui/sidebar/index.js";
 
-	import {authClient} from '#lib/auth/authClient.ts';
+	// import {authClient} from '#lib/auth/authClient.ts';
 	import {getLogoutContext} from '#lib/store/logout.svelte.ts';
+    import { getUser } from "#lib/store/user.svelte.ts";
 
 	const sidebar = Sidebar.useSidebar();
-	const session = authClient.useSession();
+	// const session = authClient.useSession();
+	let user = getUser();
 	const logout = getLogoutContext();
 </script>
 
@@ -30,13 +32,13 @@
 						class="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground cursor-pointer"
 					>
 						<Avatar.Root class="size-8 rounded-lg">
-							<Avatar.Image referrerpolicy='no-referrer' src={$session.data?.user.image} alt={$session.data?.user.name} />
+							<Avatar.Image referrerpolicy='no-referrer' src={user.user?.image} alt={user.user?.name} />
 							<Avatar.Fallback class="rounded-lg">CN</Avatar.Fallback>
 						</Avatar.Root>
 						<div class="grid flex-1 text-start text-sm leading-tight">
-							<span class="truncate font-medium">{$session.data?.user.name}</span>
+							<span class="truncate font-medium">{user.user?.name}</span>
 							<span class="truncate text-xs text-muted-foreground">
-								{$session.data?.user.email}
+								{user.user?.email}
 							</span>
 						</div>
 						<DotsVerticalIcon class="ms-auto size-4" />
@@ -52,16 +54,16 @@
 				<DropdownMenu.Label class="p-0 font-normal">
 					<div class="flex items-center gap-2 px-1 py-1.5 text-start text-sm">
 						<Avatar.Root class="size-8 rounded-lg">
-							<Avatar.Image referrerpolicy='no-referrer' src={$session.data?.user.image} alt={$session.data?.user.name} />
+							<Avatar.Image referrerpolicy='no-referrer' src={user.user?.image} alt={user.user?.name} />
 							<Avatar.Fallback class="rounded-lg">ZS</Avatar.Fallback>
 						</Avatar.Root>
 						<div class="grid flex-1 text-start text-sm leading-tight">
-							<span class="truncate font-medium">{$session.data?.user.name}</span>
+							<span class="truncate font-medium">{user.user?.name}</span>
 							<span class="truncate text-xs text-muted-foreground">
-								{$session.data?.user.email}
+								{user.user?.email}
 							</span>
 							<span class='mt-1.5 flex flex-row gap-1'>
-								{#each $session.data?.user.role?.split(",") as role (role)}
+								{#each user.user?.role?.split(",") as role (role)}
 									<Badge variant='secondary'>{role.toLowerCase()}</Badge>
 								{/each}
 							</span>

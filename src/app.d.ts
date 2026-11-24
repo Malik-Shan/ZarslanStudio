@@ -1,6 +1,10 @@
-import type {User, Session} from 'better-auth';
-import type {DrizzleClient} from '#lib/server/db';
-import type {Auth} from '#lib/server/auth';
+import type { createAuth } from './lib/server/auth';
+import type { createD1Client } from './lib/server/db';
+
+type Auth = ReturnType<typeof createAuth>
+type User = Auth['$Infer']['Session']['user']
+type Session = Auth['$Infer']['Session']['session']
+
 
 // See https://svelte.dev/docs/kit/types#app.d.ts
 // for information about these interfaces
@@ -13,10 +17,10 @@ declare global {
 		}
 
 		interface Locals { 
-			db: DrizzleClient;
-			auth: Auth;
-			user: User; 
-			session: Session;
+			db: ReturnType<typeof createD1Client>;
+			auth: ReturnType<typeof createAuth>;
+			user: User | null;
+			session: Session | null;
 		}
 
 		// interface Error {}

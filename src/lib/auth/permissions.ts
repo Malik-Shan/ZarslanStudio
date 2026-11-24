@@ -23,3 +23,10 @@ export const member = ac.newRole({
 export const scripter = ac.newRole({
 	script: ['create', 'update', 'delete', 'share']
 })
+
+export const roles = {
+	owner,
+	admin,
+	member,
+	scripter
+} as const;

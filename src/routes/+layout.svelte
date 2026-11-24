@@ -4,9 +4,12 @@
 	import { ModeWatcher } from 'mode-watcher';
 	import {Toaster} from '#lib/components/ui/sonner/index.js'
 	import type { LayoutProps } from './$types';
+    import { setUser, User } from '#lib/store/user.svelte.ts';
+    import { untrack } from 'svelte';
 
-	let { children }: LayoutProps = $props();
+	let { children, data }: LayoutProps = $props();
 
+	setUser(new User({user: untrack(() => data.user), session: untrack(() => data.session)}));
 </script>
 
 <svelte:head>

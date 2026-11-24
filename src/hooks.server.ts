@@ -1,19 +1,19 @@
 import type { Handle } from '@sveltejs/kit/hooks';
-import {env} from 'cloudflare:workers';
+
 interface WorkSpaceRole {
 	path: `/${string}`,
 	role: 'admin' | 'user' | 'employee'
 }
 
+import {env} from 'cloudflare:workers';
+import { building } from '$app/env';
+
 import { svelteKitHandler } from 'better-auth/svelte-kit';
 
-import { createLibSqlClient, createD1Client } from './lib/server/db';
+import { createD1Client } from './lib/server/db';
 import { createAuth } from './lib/server/auth';
 
-import {DATABASE_URL} from "$app/env/private";
-import { building } from '$app/env';
 import { error, redirect } from '@sveltejs/kit';
-
 
 const SpacesWithRole = {
 	app: {
@@ -34,13 +34,18 @@ const signInPage = "/signin"
 
 const handleBetterAuth: Handle = async ({ event, resolve }) => {
 	const d1 = env.zarslanstudio_db_dev;
-	if(d1) {
+	if(d1){
 		event.locals.db = createD1Client(d1);
-	} else if(DATABASE_URL){
-		event.locals.db = createLibSqlClient(DATABASE_URL);
 	} else {
 		throw new Error("No database found.");
 	}
+	// if(d1) {
+	// 	event.locals.db = createD1Client(d1);
+	// } else if(DATABASE_URL){
+	// 	event.locals.db = createLibSqlClient(DATABASE_URL);
+	// } else {
+	// 	throw new Error("No database found.");
+	// }
 
 	const auth = createAuth(event.locals.db);
 	event.locals.auth = auth;

@@ -1,6 +1,6 @@
 import { createAuthClient } from 'better-auth/svelte';
 import {adminClient, organizationClient, lastLoginMethodClient} from 'better-auth/client/plugins';
-import {ac, admin, owner, member, scripter} from './permissions.js';
+import { roles, ac } from './permissions';
 
 const authClient = createAuthClient({
     sessionOptions:{
@@ -18,12 +18,7 @@ const authClient = createAuthClient({
         adminClient(),
         organizationClient({
 			ac,
-			roles: {
-				owner,
-				admin,
-				member,
-				scripter
-			}
+			roles
         }),
         lastLoginMethodClient()
     ]

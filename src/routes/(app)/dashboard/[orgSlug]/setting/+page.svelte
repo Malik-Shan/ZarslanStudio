@@ -1,31 +1,40 @@
 <script lang='ts'>
-    import type { PageProps } from "./$types";
     import { authClient } from "#lib/auth/authClient.ts";
-    import {Input} from "#lib/components/ui/input/index.js"
     import { getOrganizationManager } from '#lib/store/organization/manager.svelte.js';
-    import { resolve } from "$app/paths";
+    import { getUser } from "#lib/store/user.svelte.ts";
+    import { checkOrgPermissions } from "#lib/authorization/organization.ts";
     import {goto} from '$app/navigation';
-    import { toast } from "svelte-sonner";
+    import { resolve } from "$app/paths";
+
+    import {Input} from "#lib/components/ui/input/index.js"
     import DangerZone from "#lib/components/app/DangerZone.svelte";
+    import Button from "#lib/components/ui/button/button.svelte";
+    import { toast } from "svelte-sonner";
     import * as Tabs from '#lib/components/ui/tabs/index.js';
     import * as Card from '#lib/components/ui/card/index.js';
     import * as Table from '#lib/components/ui/table/index.js';
     import * as Avatar from '#lib/components/ui/avatar/index.js';
-    import Button from "#lib/components/ui/button/button.svelte";
+
+    import type { PageProps } from "./$types";
+    type Permissions = {
+        org_delete: boolean
+        org_update: boolean
+        member_delete: boolean
+        member_update: boolean
+        invitation_create: boolean
+    };
+
 
     const orgManager = getOrganizationManager();
-    const session = authClient.useSession();
+    const user = getUser();
 
-    let deletingOrg = $state<boolean>(false);
     let orgName = $state<string>("");
     let originalOrgName = $state<string>("");
     let updatingOrgName = $state(false);
+    let deletingOrg = $state<boolean>(false);
 
-
-    const name = orgManager.activeOrganization?.name ?? "";
-
-    orgName = name;
-    originalOrgName = name;
+    orgName = orgManager.activeOrganization?.name ?? "";
+    originalOrgName = orgManager.activeOrganization?.name ?? "";
 
     async function deleteOrg(){
 
@@ -90,18 +99,22 @@
 
 
     };
-    async function t(){
-
-         return await authClient.organization.hasPermission({
-            permissions:{
-                member: ['create', 'delete'],
-                script: ['create']
-            },
-            organizationId: orgManager.activeOrganization!.id
-        })
-    }
 
     let {data}: PageProps = $props();
+
+    const userMemberInfo = $derived.by<typeof authClient.$Infer.Member>((): typeof authClient.$Infer.Member => {
+        return data.fullOrganization.members.filter((member) => member.userId === user.user?.id)[0];
+    });
+
+    const orgPermissions = $derived.by<Permissions>(():Permissions => {
+        return {
+            org_delete : checkOrgPermissions({role: userMemberInfo.role, permissions: {organization: ['delete']}}),
+            org_update : checkOrgPermissions({role: userMemberInfo.role, permissions: {organization: ['update']}}),
+            member_delete : checkOrgPermissions({role: userMemberInfo.role, permissions: {member: ['delete']}}),
+            member_update : checkOrgPermissions({role: userMemberInfo.role, permissions: {member: ['update']}}),
+            invitation_create : checkOrgPermissions({role: userMemberInfo.role, permissions: {invitation: ['create']}}),
+        }
+    })
 
 </script>
 
@@ -127,9 +140,9 @@
                         <Input
                             bind:value={orgName}
                             type="text"
-                            disabled={updatingOrgName || !data.orgPermissions?.org_update}
+                            disabled={updatingOrgName || !orgPermissions.org_update}
                             onkeydown={(e: KeyboardEvent) => {
-                                if(!data.orgPermissions?.org_update) return;
+                                if(!orgPermissions.org_update) return;
                                 if (e.key === "Enter") {
                                     e.preventDefault();
                                     updateOrgName();
@@ -149,12 +162,6 @@
                 <!-- </Card.Footer> -->
 
             </Card.Root>
-
-            {#await t()}
-                <p>Loading</p>
-            {:then res} 
-               <span>{JSON.stringify(res)}</span> 
-            {/await}
 
             <DangerZone bind:deleting={deletingOrg} deletingOrg={deleteOrg} />
         </Tabs.Content>
@@ -196,9 +203,9 @@
                                 {member.role}
                             </Table.Cell>
                             <Table.Cell class='text-right'>
-                                {#if data.orgPermissions?.member_delete && $session.data?.user.id !== member.userId}
+                                {#if orgPermissions.member_delete && user.user?.id !== member.userId}
                                     <Button variant='destructive'>Remove</Button>
-                                {:else if $session.data?.user.id === member.userId && member.role === "owner"}
+                                {:else if user.user?.id === member.userId && member.role === "owner"}
                                     <Button disabled variant='destructive'>Leave</Button>
                                 {:else}
                                     <Button variant='destructive'>Leave</Button>
@@ -214,7 +221,7 @@
                 <Table.Footer class='bg-background'>
                     <Table.Row class='hover:bg-background'>
                         <Table.Cell colspan={4} >
-                            {#if data.orgPermissions?.invitation_create}
+                            {#if orgPermissions.invitation_create}
                                 <Button variant='ghost' class='cursor-pointer w-full py-5!'>+ Invite Member</Button>
                             {/if}
                         </Table.Cell>

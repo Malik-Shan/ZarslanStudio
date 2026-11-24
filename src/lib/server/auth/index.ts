@@ -11,7 +11,7 @@ import { drizzleAdapter } from 'better-auth/adapters/drizzle';
 import { sveltekitCookies } from 'better-auth/svelte-kit';
 import { getRequestEvent } from '$app/server';
 import * as schema from '#lib/server/db/schema.js';
-import { ac,owner, member, scripter, admin as AdminRole } from './permissions.js';
+import { roles, ac } from '#lib/auth/permissions.ts';
 import type { DrizzleClient } from '#lib/server/db/index.js';
 
 
@@ -33,12 +33,7 @@ export const createAuth = (database: DrizzleClient) => {
          organization({
             allowUserToCreateOrganization:true,
             ac,
-            roles: {
-               owner,
-               admin: AdminRole,
-               member,
-               scripter
-            }
+            roles
          },
          ),
          lastLoginMethod(),

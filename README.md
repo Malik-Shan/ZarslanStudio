@@ -19,6 +19,7 @@
 
 ## Todo List
 Priority:
+- [ ] Research on remote function & user authentication & authorization before using them.
 - [x] Ability to select org and redirect.
 - [x] Show the active or no-org-select if on the `dashboard`
 - [x] User --> profile setting (/dahboard/profile)
