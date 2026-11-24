@@ -1,21 +1,21 @@
 {
 	"$schema": "node_modules/wrangler/config-schema.json",
 	"name": "zarslanstudio",
-	// "main":"./.svelte-kit/cloudflare/_woker.js",
+	// "main":".svelte-kit/cloudflare/_woker.js",
 	"compatibility_date": "2026-11-18",
 	"compatibility_flags": [
 		"nodejs_compat"
 	],
 	"assets": {
 		"binding": "ASSETS",
-		"directory": "./.svelte-kit/cloudflare/"
+		"directory": ".svelte-kit/cloudflare"
 	},
 	"observability": {
 		"enabled": true
 	},
 	"upload_source_maps": true,
 	"workers_dev": true,
-	"preview_urls": true,
+	"preview_urls": false,
 	"d1_databases": [
 		{
 			"binding": "zarslanstudio_db_dev",

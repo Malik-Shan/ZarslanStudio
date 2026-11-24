@@ -17,7 +17,6 @@ export default defineConfig({
 			},
 			adapter: adapter({
 				worker: true,
-				config: "wrangler.jsonc"
 			})
 		})
 	],
