@@ -7,12 +7,13 @@ export const load:PageServerLoad = async({locals}) => {
 
    const userOrganizations = await locals.db.query.member.findMany({
       where: (member, {eq}) => {
-         eq(member.userId, user.id);
+         return eq(member.userId, user.id);
       },
       with: {
          organization: true
       }
    })
+
 
    return {userOrganizations};
 }
