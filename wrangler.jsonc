@@ -21,7 +21,8 @@
 			"binding": "zarslanstudio_db_dev",
 			"database_name": "zarslanstudio-db-dev",
 			"database_id": "0d626c05-83cc-44c0-92f8-132bc6fe4713",
-			"migrations_dir": "./src/lib/server/db/migrations"
+			"migrations_dir": "src/lib/server/db/migrations",
+			"migrations_pattern": "src/lib/server/db/migrations/*/migration.sql"
 		}
 	]
 }

@@ -10,7 +10,7 @@
 </script>
 
 <div class='w-full h-full flex justify-center items-center'>
-	<Button class='cursor-pointer outline-dashed p-15 w-auto h-auto text-xl gap-3 text-muted-foreground [&_svg]:h-7! [&_svg]:w-7!' 
+	<Button class='cursor-pointer border-dashed border-2  p-15 w-auto h-auto text-xl gap-3 text-muted-foreground [&_svg]:h-7! [&_svg]:w-7!' 
 		onclick={() => {
 			formstatus.open();
 		}} variant="outline"

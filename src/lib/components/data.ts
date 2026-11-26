@@ -133,7 +133,7 @@ export const data:Data = {
     navSecondary: [
         {
             title: "Settings",
-            url: "/",
+            url: "/(app)/user/setting",
             icon: SettingsIcon,
         },
         {

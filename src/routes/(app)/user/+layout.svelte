@@ -1,5 +1,5 @@
 <script lang='ts'>
-   import type { Snippet } from "svelte";
+   import type { LayoutProps } from "./$types";
 
    import {page} from "$app/state";
    import { resolve } from "$app/paths";
@@ -14,11 +14,11 @@
    import Badge from "#lib/components/ui/badge/badge.svelte";
    import Button from "#lib/components/ui/button/button.svelte";
    import Spinner from "#lib/components/ui/spinner/spinner.svelte";
-    import { getUser } from "#lib/store/user.svelte.ts";
+   import { getUser } from "#lib/store/user.svelte.ts";
 
-   let {children} : {children: Snippet} = $props();
+   let {children, data} : LayoutProps = $props();
 
-   let data:Array<{name: string, path: string}> = [
+   let nav:Array<{name: string, path: string}> = [
       {name: 'setting', path: '/user/setting'},
       {name: 'organizations', path: '/user/organizations'},
       {name: 'invitations', path: '/user/invitations'},
@@ -33,7 +33,7 @@
 <main class='px-8 py-8 max-w-300 mx-auto overflow-y-auto'>
    <div class='flex flex-col'>
       <header class='mb-8 flex flex-row items-center justify-between'>
-         <Button href={resolve('/(app)/dashboard')} variant='ghost'>
+         <Button href={data.returnTo ?? resolve('/(app)/dashboard')} variant='ghost'>
             <ArrowLeft />
             Dashboard
          </Button>
@@ -71,9 +71,9 @@
          <section>
             <nav class='mb-4'>
                <ul class='flex flex-row gap-2 dark:bg-input/70 bg-input/60 p-2 py-1.5 rounded-md'>
-                  {#each data as d (d)}
+                  {#each nav as n (n)}
                      <li>
-                        <Button class='py-0 rounded-sm! {page.url.pathname === d.path && "bg-background hover:bg-background"}' size='sm' variant='secondary' href={d.path}>{d.name}</Button>
+                        <Button class='py-0 rounded-sm! {page.url.pathname === n.path && "bg-background hover:bg-background"}' size='sm' variant='secondary' href={n.path}>{n.name}</Button>
                      </li>
                   {/each}
                </ul>

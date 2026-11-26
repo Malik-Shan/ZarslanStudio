@@ -12,8 +12,9 @@
 	import * as Sidebar from "#lib/components/ui/sidebar/index.js";
 
 	// import {authClient} from '#lib/auth/authClient.ts';
+	import { resolve } from "$app/paths";
 	import {getLogoutContext} from '#lib/store/logout.svelte.ts';
-    import { getUser } from "#lib/store/user.svelte.ts";
+	import { getUser } from "#lib/store/user.svelte.ts";
 
 	const sidebar = Sidebar.useSidebar();
 	// const session = authClient.useSession();
@@ -72,9 +73,13 @@
 				</DropdownMenu.Label>
 				<DropdownMenu.Separator />
 				<DropdownMenu.Group>
-					<DropdownMenu.Item>
-						<UserCircleIcon />
-						Account
+					<DropdownMenu.Item class='cursor-pointer'>
+						{#snippet child({props})}
+							<a {...props} href={resolve('/(app)/user/setting?')}>
+								<UserCircleIcon />
+								Account
+							</a>
+						{/snippet}
 					</DropdownMenu.Item>
 					<DropdownMenu.Item>
 						<CreditCardIcon />
