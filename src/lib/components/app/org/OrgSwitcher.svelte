@@ -75,7 +75,7 @@
 		</DropdownMenu.Label>
 
 		<div class='max-h-100 overflow-y-auto'>
-			{#each org.organizations as organization (organization.id)}
+			{#each org.organizations.values() as organization (organization.id)}
 				<DropdownMenu.Item
 					// onSelect={() => (activeTeam = team)}
 					class="cursor-pointer gap-2 p-1 mb-1.5"

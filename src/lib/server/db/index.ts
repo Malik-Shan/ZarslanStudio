@@ -12,5 +12,4 @@ export function createD1Client(database: D1Database): DrizzleD1Database<typeof r
    return drizzleD1(database, {relations});
 }
 
-export type DrizzleClient = ReturnType<typeof createLibSqlClient> | ReturnType<typeof createD1Client>;
 

@@ -12,7 +12,7 @@ export const load:PageServerLoad = async({locals}) => {
       with: {
          organization: true
       }
-   })
+   });
 
    return {userOrganizations};
 };

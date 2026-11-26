@@ -202,10 +202,12 @@ export const authRelations = defineRelationsPart(
       organization: r.one.organization({
         from: r.member.organizationId,
         to: r.organization.id,
+        optional: false
       }),
       user: r.one.user({
         from: r.member.userId,
         to: r.user.id,
+        optional: false
       }),
     },
     invitation: {

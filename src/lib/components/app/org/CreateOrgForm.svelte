@@ -13,9 +13,11 @@
     import { goto } from "$app/navigation";
     import { resolve } from "$app/paths";
     import { getOrgCreationFormStatus } from "#lib/store/org-creation-form.svelte.ts";
+    import { getOrganizationManager } from "#lib/store/organization/manager.svelte.ts";
 
     type OrganizationData = Omit<Parameters<typeof authClient.organization.create>[0], "fetchOptions">
 
+    const orgManager = getOrganizationManager();
     let formstatus = getOrgCreationFormStatus();
     let isLoading = $state<boolean>(false);
     let slugError = $state<string | undefined | null>(null);
@@ -120,7 +122,7 @@
                 >
                     Cancel
                 </Dialog.Close>
-
+                
                 <Button type="submit" disabled={organizationData.name.trim().length === 0 || isLoading}>
                     {#if isLoading}
                         <Spinner />	

@@ -7,13 +7,13 @@ import { redirect } from '@sveltejs/kit';
 
 export const load: LayoutServerLoad = async (event) => {
     return requireOrganization(event)
-        .then((organization) => {
-            if (!organization) {
-                redirect(307, resolve('/(app)/dashboard'));
-                // error(404, 'Organization not found');
-            }
+        .then((data) => {
+            if (!data || !data.organization) {
+                console.log("erro ran")
+                throw new Error('No organization found.');
+            };
 
-            event.cookies.set('__session_org_id', organization.id, {
+            event.cookies.set('__session_org_slug', data.organization.slug, {
                 path: '/dashboard',
                 httpOnly: true,
                 secure: !dev,
@@ -22,10 +22,15 @@ export const load: LayoutServerLoad = async (event) => {
             });
 
             return {
-                organization
+                organization: data.organization,
+                member: data
             };
         })
         .catch(() => {
+            console.log("coookie deleted hopefully");
+            event.cookies.delete('__session_org_slug', {
+                path: '/dashboard'
+            });
             redirect(307, resolve('/(app)/dashboard'));
             // Hide whether an organization exists
             // when the user doesn't have access.

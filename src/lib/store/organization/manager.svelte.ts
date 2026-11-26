@@ -1,29 +1,59 @@
 import { createContext } from 'svelte';
 import { authClient } from '#lib/auth/authClient.js';
+import { SvelteMap } from 'svelte/reactivity';
 
 export type Organization = typeof authClient.$Infer.Organization;
+export type Member = typeof authClient.$Infer.Member;
 
 export class OrganizationManager {
 
+  activeOrganization = $state<Organization | null>(null);
+  // organizations = new SvelteMap<string, Organization>();
+
   constructor(
-    private getServerOrganization: () => Organization | null,
+    {active}: {active: Organization | null},
     private getOrganizationList: () => Organization[] | null
-  ) {}
+  ) {
+    this.activeOrganization = active;
 
-  organizations = $derived.by<Organization[]>(() => {
-    return this.getOrganizationList() ?? [];
+    // const organizationList = this.getOrganizationList();
+    //
+    // if(organizationList){
+    //   organizationList.map((org) => {
+    //     this.addOrganization(org);
+    //   })
+    // }
+
+
+  }
+
+  organizations = $derived.by<SvelteMap<string, Organization>>(() => {
+    const organizations = new SvelteMap<string, Organization>();
+    const organizationList = this.getOrganizationList();
+
+    if(!organizationList || organizationList.length === 0) return organizations;
+
+    organizationList.map((org) => {
+      organizations.set(org.id, org);
+    })
+    return organizations;
   })
 
-  activeOrganization = $derived.by<Organization | null>(() => {
-    const serverOrg = this.getServerOrganization();
+  setActiveOrganization = (org: Organization) => {
+    if(!org) return;
+    this.activeOrganization = org;
+  };
 
-    if (!serverOrg) return null;
+  // removeOrganization = (id:string) => {
+  //   if(!id || this.organizations.size === 0) return;
+  //   this.organizations.delete(id);
+  // };
+  //
+  // addOrganization = (org: Organization) => {
+  //   if(!org || !org.id) return;
+  //   this.organizations.set(org.id, org);
+  // };
 
-    return (
-      this.organizations.find((org) => org.id === serverOrg.id) ??
-        serverOrg
-    );
-  })
 }
 
 export const [

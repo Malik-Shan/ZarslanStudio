@@ -3,12 +3,13 @@
     import { getOrganizationManager } from '#lib/store/organization/manager.svelte.js';
     import { getUser } from "#lib/store/user.svelte.ts";
     import { checkOrgPermissions } from "#lib/authorization/organization.ts";
-    import {goto} from '$app/navigation';
+    import {goto, refreshAll} from '$app/navigation';
     import { resolve } from "$app/paths";
 
     import {Input} from "#lib/components/ui/input/index.js"
     import DangerZone from "#lib/components/app/DangerZone.svelte";
     import Button from "#lib/components/ui/button/button.svelte";
+    import { Skeleton } from "#lib/components/ui/skeleton/index.ts";
     import { toast } from "svelte-sonner";
     import * as Tabs from '#lib/components/ui/tabs/index.js';
     import * as Card from '#lib/components/ui/card/index.js';
@@ -43,12 +44,12 @@
         deletingOrg = true;
 
         await authClient.organization.delete({organizationId: orgManager.activeOrganization.id})
-        .then((res) => {
+        .then(async (res) => {
             if(res.error){
                 throw (res.error?.message || "Failed to delete organization.")
             }
             toast.success("Organization deleted successfully");
-
+            await refreshAll();
             goto(resolve('/(app)/dashboard'))
 
         })
@@ -81,7 +82,9 @@
                 throw new Error(res.error.message || "Failed to update organization name.");
             }
             originalOrgName = res.data.name;
-
+            if(orgManager.activeOrganization){
+                orgManager.activeOrganization.name = name;
+            };
             toast.success("Organization updated successfully");
         })
         .catch((err) => {
@@ -102,17 +105,18 @@
 
     let {data}: PageProps = $props();
 
-    const userMemberInfo = $derived.by<typeof authClient.$Infer.Member>((): typeof authClient.$Infer.Member => {
-        return data.fullOrganization.members.filter((member) => member.userId === user.user?.id)[0];
-    });
+    // const userMemberInfo = $derived.by<typeof authClient.$Infer.Member>((): typeof authClient.$Infer.Member => {
+    //     return data.fullOrganization.members.filter((member) => member.userId === user.user?.id)[0];
+    // });
+
 
     const orgPermissions = $derived.by<Permissions>(():Permissions => {
         return {
-            org_delete : checkOrgPermissions({role: userMemberInfo.role, permissions: {organization: ['delete']}}),
-            org_update : checkOrgPermissions({role: userMemberInfo.role, permissions: {organization: ['update']}}),
-            member_delete : checkOrgPermissions({role: userMemberInfo.role, permissions: {member: ['delete']}}),
-            member_update : checkOrgPermissions({role: userMemberInfo.role, permissions: {member: ['update']}}),
-            invitation_create : checkOrgPermissions({role: userMemberInfo.role, permissions: {invitation: ['create']}}),
+            org_delete : checkOrgPermissions({role: data.member.role, permissions: {organization: ['delete']}}),
+            org_update : checkOrgPermissions({role: data.member.role , permissions: {organization: ['update']}}),
+            member_delete : checkOrgPermissions({role: data.member.role, permissions: {member: ['delete']}}),
+            member_update : checkOrgPermissions({role: data.member.role, permissions: {member: ['update']}}),
+            invitation_create : checkOrgPermissions({role: data.member.role, permissions: {invitation: ['create']}}),
         }
     })
 
@@ -180,40 +184,64 @@
                 </Table.Header>
                 <Table.Body>
 
-                    {#each data.fullOrganization?.members as member (member.id)}
-
-                        <Table.Row class=''>
-                            <Table.Cell class='flex flex-row items-center gap-2'>
-                                <Avatar.Root size="lg">
-                                    <Avatar.Image src={member.user.image} />
-                                    <Avatar.Fallback>ZS</Avatar.Fallback>
-                                </Avatar.Root>
-                                <div class='flex flex-col'>
-                                    <span class='truncate'>{member.user.name}</span>
-                                    <span class='truncate text-muted-foreground'>{member.user.email}</span>
-                                </div>
+                    {#await authClient.organization.listMembers({
+                        query: {
+                            organizationId: data.organization.id
+                        }
+                    })}
+                        <Table.Row class='hover:bg-background'>
+                            <Table.Cell colspan={4} >
+                                <Skeleton class='h-10' />
                             </Table.Cell>
-                            <Table.Cell>
-                                <div class='flex flex-col text-xs'>
-                                    <span>{new Date(member.createdAt).toLocaleDateString()}</span>
-                                    <span>{new Date(member.createdAt).toLocaleTimeString()}</span>
-                                </div>
+                        </Table.Row>
+                        <Table.Row class='hover:bg-background'>
+                            <Table.Cell colspan={4} >
+                                <Skeleton class='h-10' />
                             </Table.Cell>
-                            <Table.Cell>
-                                {member.role}
-                            </Table.Cell>
-                            <Table.Cell class='text-right'>
-                                {#if orgPermissions.member_delete && user.user?.id !== member.userId}
-                                    <Button variant='destructive'>Remove</Button>
-                                {:else if user.user?.id === member.userId && member.role === "owner"}
-                                    <Button disabled variant='destructive'>Leave</Button>
-                                {:else}
-                                    <Button variant='destructive'>Leave</Button>
-                                {/if}
+                        </Table.Row>
+                        <Table.Row class='hover:bg-background'>
+                            <Table.Cell colspan={4} >
+                                <Skeleton class='h-10' />
                             </Table.Cell>
                         </Table.Row>
 
-                    {/each}
+                        {:then {data:membersData}} 
+                        {#each membersData?.members as member (member.id)}
+
+                            <Table.Row class=''>
+                                <Table.Cell class='flex flex-row items-center gap-2'>
+                                    <Avatar.Root size="lg">
+                                        <Avatar.Image src={member.user.image} />
+                                        <Avatar.Fallback>ZS</Avatar.Fallback>
+                                    </Avatar.Root>
+                                    <div class='flex flex-col'>
+                                        <span class='truncate'>{member.user.name}</span>
+                                        <span class='truncate text-muted-foreground'>{member.user.email}</span>
+                                    </div>
+                                </Table.Cell>
+                                <Table.Cell>
+                                    <div class='flex flex-col text-xs'>
+                                        <span>{new Date(member.createdAt).toLocaleDateString()}</span>
+                                        <span>{new Date(member.createdAt).toLocaleTimeString()}</span>
+                                    </div>
+                                </Table.Cell>
+                                <Table.Cell>
+                                    {member.role}
+                                </Table.Cell>
+                                <Table.Cell class='text-right'>
+                                    {#if orgPermissions.member_delete && user.user?.id !== member.userId}
+                                        <Button variant='destructive'>Remove</Button>
+                                    {:else if user.user?.id === member.userId && member.role === "owner"}
+                                        <Button disabled variant='destructive'>Leave</Button>
+                                    {:else}
+                                        <Button variant='destructive'>Leave</Button>
+                                    {/if}
+                                </Table.Cell>
+                            </Table.Row>
+
+                        {/each}
+                    {/await}
+
 
 
                 </Table.Body>

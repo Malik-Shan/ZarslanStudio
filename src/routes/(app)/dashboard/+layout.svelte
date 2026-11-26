@@ -12,9 +12,8 @@
     let {children} : LayoutProps = $props();
 
     const organizationQuery = authClient.useListOrganizations();
-
     const organizationManager = new OrganizationManager(
-        () => page.data.organization ?? null,
+        {active: page.data.organization},
         () => $organizationQuery.data ?? null
     );
 

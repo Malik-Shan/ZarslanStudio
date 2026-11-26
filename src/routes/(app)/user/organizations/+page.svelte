@@ -1,5 +1,10 @@
 <script lang='ts'>
 	import type {PageProps} from './$types';
+	import type { MemberSelect, OrganizationSelect } from '#lib/server/db/types.ts';
+
+	type UserOrganization = MemberSelect & {
+		organization: OrganizationSelect 
+	};
 
 	import * as Card from '#lib/components/ui/card/index.js';
 	import * as Avatar from '#lib/components/ui/avatar/index.js';
@@ -8,6 +13,7 @@
 	import Spinner from '#lib/components/ui/spinner/spinner.svelte';
 	import { Trash } from '@lucide/svelte';
 
+	import { fade } from 'svelte/transition';
 	import { toast } from 'svelte-sonner';
 	import { authClient } from '#lib/auth/authClient.ts';
 	import { checkOrgPermissions } from '#lib/authorization/organization.ts';
@@ -15,7 +21,7 @@
 
 	const {data}: PageProps = $props();
 
-	let userOrganizations = $state(untrack(() => data.userOrganizations));
+	let userOrganizations = $state<UserOrganization[] | undefined>(untrack(() => data.userOrganizations ?? []));
 	let spinnerState = $state<{
 		organizationId: string | null,
 		state: boolean
@@ -63,7 +69,7 @@
 
 	<div class='flex flex-col gap-1.5'>
 		{#each userOrganizations as userOrg (userOrg.organizationId)}
-			<div class='flex w-full justify-between items-center hover:bg-muted/50 px-1.5 py-1 rounded-md'>
+			<div out:fade={{duration: 350}} class='flex w-full justify-between items-center hover:bg-muted/50 px-1.5 py-1 rounded-md'>
 				<div class='flex w-0 flex-1 flex-nowrap items-center gap-2'>
 					<Avatar.Root size='sm' >
 						<Avatar.Image src={userOrg.organization.logo}/>
